@@ -1,2 +1,113 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+#pragma once
+#ifndef LIBRARY_H
+#define LIBRARY_H
+
+#include <iostream>
+#include <vector>
+#include <initializer_list>
+
+class MySet {
+public:
+    MySet();
+    ~MySet();
+
+
+    // getter and setter
+    void setter(std::string&);  // lvalue
+    void setter(std::string&& line) { this->setter(line); } //   rvalue ----> lvalue
+    void setter(char* line) { this->setter(std::string(line)); }
+    void setter(MySet& value) { this->add(value); }
+
+    std::string getter();
+
+
+    // compare
+    bool compare(MySet& value) {
+        return check(this->masElement, value.masElement) && check(value.masElement, this->masElement);
+    }
+
+    // add
+    bool add(MySet&);
+    bool add(std::string&); // lvalue
+    bool add(std::string&& line) { this->add(line); } // rvalue ---> lvalue
+    bool add(char* line) { return this->add(std::string(line)); }
+
+    bool operator += (std::string& line) { return this->add(line); }
+    bool operator += (std::string&& line) { return this->add(line); }
+    bool operator +=(char* line) { return this->add(std::string(line)); }
+
+    bool operator += (MySet& value) { return this->add(value); }
+
+
+    // merge
+    MySet operator + (MySet&);
+    friend MySet mergeSet(MySet&, MySet&);
+
+
+    // cross
+    MySet operator * (MySet&);
+    friend MySet crossSet(MySet&, MySet&);
+    void operator *= (MySet& value) { *this = *this * value; }
+
+    // difference
+    MySet operator - (MySet&);
+    friend MySet differenceSet(MySet&, MySet&);
+    void operator -= (MySet& value) { *this = *this - value; }
+    void differenceElement(MySet& value) { *this -= value; }
+
+    void operator -= (std::string&);
+    void differenceElement(std::string&);
+    void differenceElement(std::string&& line) { this->differenceElement(line); }
+    void differenceElement(char* line) { this->differenceElement(std::string(line)); }
+    void operator -= (std::string&& line) { this->differenceElement(line); }
+    void operator -= (char* line) { *this -= std::string(line); }
+
+    // belong
+    bool operator[](MySet& value) { return this->check(value.masElement, this->masElement); }
+    bool belongElement(MySet& value) { return this->check(value.masElement, this->masElement); }
+    bool belongElement(std::string&);
+    bool belongElement(std::string&& line) { return this->belongElement(line); }
+    bool belongElement(char* line) { return belongElement(std::string(line)); }
+
+
+
+    // boolean
+    MySet boolean();
+
+    // other operations
+    int capacity() { return this->masElement.size(); }
+    bool isEmpty() { return !this->masElement.size(); }
+    void clearSet() { this->masElement.clear(); }
+
+protected:
+
+    struct sets {
+        bool flag;
+        std::vector<sets> elements;
+        std::string element = "";
+    };
+
+private:
+
+    // data
+    std::vector<sets> masElement;
+
+    // getter and setter
+    int setter(std::vector<sets>&, std::string&, int);
+    void getter(std::vector<sets>&, std::string&);
+
+    // check
+    bool check(sets&, sets&);
+    bool check(std::vector<sets>&, std::vector<sets>&);
+    bool check(std::vector<sets>&, sets&);
+
+};
+
+
+// functions, that work with MySet
+MySet mergeSet(MySet&, MySet&);
+MySet crossSet(MySet&, MySet&);
+MySet differenceSet(MySet&, MySet&);
+
+
+#endif // LIBRARY_H
