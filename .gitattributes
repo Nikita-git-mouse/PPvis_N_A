@@ -13,26 +13,26 @@ public:
 
 
     // getter and setter
-    void setter(std::string&);  // lvalue
-    void setter(std::string&& line) { this->setter(line); } //   rvalue ----> lvalue
-    void setter(char* line) { this->setter(std::string(line)); }
-    void setter(MySet& value) { this->add(value); }
+    void setter(std::string&);  // lvalue(постоянная переменная) строка со множеством 
+    void setter(std::string&& line) { this->setter(line); } //   rvalue(вмеренная) ----> lvalue строка со множеством 
+    void setter(char* line) { this->setter(std::string(line)); } // строка со множеством 
+    void setter(MySet& value) { this->add(value); } // Наш класс и выделяем оттуда множество
 
-    std::string getter();
+    std::string getter(); // выдает строку предпалагаемого множества 
 
 
     // compare
-    bool compare(MySet& value) {
+    bool compare(MySet& value) { // проверяет равность множеств true если они равны
         return check(this->masElement, value.masElement) && check(value.masElement, this->masElement);
     }
 
     // add
-    bool add(MySet&);
-    bool add(std::string&); // lvalue
-    bool add(std::string&& line) { this->add(line); } // rvalue ---> lvalue
+    bool add(MySet&); // добавляет элемент ввиде нашего класса
+    bool add(std::string&); // lvalue добавляет в наше множество строку со множеством
+    bool add(std::string&& line) { this->add(line); } // rvalue ---> lvalue  
     bool add(char* line) { return this->add(std::string(line)); }
 
-    bool operator += (std::string& line) { return this->add(line); }
+    bool operator += (std::string& line) { return this->add(line); } // тоже самое что и add()
     bool operator += (std::string&& line) { return this->add(line); }
     bool operator +=(char* line) { return this->add(std::string(line)); }
 
@@ -40,17 +40,17 @@ public:
 
 
     // merge
-    MySet operator + (MySet&);
-    friend MySet mergeSet(MySet&, MySet&);
+    MySet operator + (MySet&); // мержит два множества
+    friend MySet mergeSet(MySet&, MySet&); 
 
 
     // cross
-    MySet operator * (MySet&);
+    MySet operator * (MySet&); // пересечение двух множеств
     friend MySet crossSet(MySet&, MySet&);
-    void operator *= (MySet& value) { *this = *this * value; }
+    void operator *= (MySet& value) { *this = *this * value; } // перегрузка операторов
 
     // difference
-    MySet operator - (MySet&);
+    MySet operator - (MySet&); // вычитание множеств
     friend MySet differenceSet(MySet&, MySet&);
     void operator -= (MySet& value) { *this = *this - value; }
     void differenceElement(MySet& value) { *this -= value; }
@@ -63,7 +63,8 @@ public:
     void operator -= (char* line) { *this -= std::string(line); }
 
     // belong
-    bool operator[](MySet& value) { return this->check(value.masElement, this->masElement); }
+    // принадлежность элемента
+    bool operator[](MySet& value) { return this->check(value.masElement, this->masElement); } 
     bool belongElement(MySet& value) { return this->check(value.masElement, this->masElement); }
     bool belongElement(std::string&);
     bool belongElement(std::string&& line) { return this->belongElement(line); }
@@ -72,17 +73,18 @@ public:
 
 
     // boolean
+    // булеан множества
     MySet boolean();
 
     // other operations
-    int capacity() { return this->masElement.size(); }
-    bool isEmpty() { return !this->masElement.size(); }
-    void clearSet() { this->masElement.clear(); }
+    int capacity() { return this->masElement.size(); } // размер множества
+    bool isEmpty() { return !this->masElement.size(); } // проверка на пустое множества
+    void clearSet() { this->masElement.clear(); } // очистка множества
 
 protected:
 
-    struct sets {
-        bool flag;
+    struct sets { // элемент 
+        bool flag; // проверка на элемент или множества
         std::vector<sets> elements;
         std::string element = "";
     };
