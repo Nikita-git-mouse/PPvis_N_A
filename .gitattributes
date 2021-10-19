@@ -85,31 +85,31 @@ protected:
 
     struct sets { // элемент 
         bool flag; // проверка на элемент или множества
-        std::vector<sets> elements;
-        std::string element = "";
+        std::vector<sets> elements; // множество таких же
+        std::string element = ""; // сам элемент
     };
 
 private:
 
     // data
-    std::vector<sets> masElement;
+    std::vector<sets> masElement; // само множество 
 
-    // getter and setter
-    int setter(std::vector<sets>&, std::string&, int);
-    void getter(std::vector<sets>&, std::string&);
+    // getter and setter  приватные поля для записи 
+    int setter(std::vector<sets>&, std::string&, int); // записывет во множество( первый аргумент ) множество ввиде строки( второй аргумент ) колво элементов ( второй аргумент)
+    void getter(std::vector<sets>&, std::string&); // записывает в строку множество( первый аргумент ) из множетва ( первый аргумент )
 
-    // check
-    bool check(sets&, sets&);
-    bool check(std::vector<sets>&, std::vector<sets>&);
-    bool check(std::vector<sets>&, sets&);
+    // check проверки
+    bool check(sets&, sets&); // проверка на схоесть двух элементов
+    bool check(std::vector<sets>&, std::vector<sets>&); // проверка на схожесть двух множеств
+    bool check(std::vector<sets>&, sets&); // проверка на присутствие второго аргумента в первом аргументе( т.е элемента во множестве)
 
 };
 
 
-// functions, that work with MySet
-MySet mergeSet(MySet&, MySet&);
-MySet crossSet(MySet&, MySet&);
-MySet differenceSet(MySet&, MySet&);
+// functions, that work with MySet они описаны отдельно от класса, но дружественны ему
+MySet mergeSet(MySet&, MySet&);//функция для склеивания множеств
+MySet crossSet(MySet&, MySet&); // функция для пересечения множеств 
+MySet differenceSet(MySet&, MySet&); // функция котрая находит разность первого от второго множества
 
 
 #endif // LIBRARY_H
