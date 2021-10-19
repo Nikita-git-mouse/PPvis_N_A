@@ -2,30 +2,30 @@
 
 
 MySet::MySet() {
-
+ // конструктор класса
 }
 
 MySet::~MySet() {
-
+  // деструктор класса
 }
 
 
 // boolean
 
-MySet MySet::boolean() {
-    MySet booleanMySet;
-    MySet bufer;
+MySet MySet::boolean() { // буллеан множества
+    MySet booleanMySet; // само булеан множество
+    MySet bufer; // буферное мнжество 
     sets buferElement;
     buferElement.flag = false;
     booleanMySet += "{{}}";
-    for (int x = 0; x < this->masElement.size(); x++) {
+    for (int x = 0; x < this->masElement.size(); x++) { // сначал формируем накладные например ( {1,2,3} ) - {1} {1,2} {1,2,3}
         buferElement.elements.clear();
         for (int y = x; y < this->masElement.size(); y++) {
             buferElement.elements.push_back(this->masElement[y]);
             booleanMySet.masElement.push_back(buferElement);
         }
     }
-    for (int x = 0; x < this->masElement.size(); x++) {
+    for (int x = 0; x < this->masElement.size(); x++) { // затем формируем комбинации {1,3} 
         bufer.clearSet();
         bufer.masElement.push_back({ false, {}, "" });
         bufer.masElement[0].elements.push_back(this->masElement[x]);
@@ -39,26 +39,26 @@ MySet MySet::boolean() {
 }
 
 // belong
-bool MySet::belongElement(std::string& line) {
+bool MySet::belongElement(std::string& line) { 
     MySet value;
     value.setter(line);
     return this->belongElement(value);
 }
 
 // difference
-MySet MySet::operator - (MySet& value) {
+MySet MySet::operator - (MySet& value) { // работае по принципу переписываем все множество кроме данного элемента
     MySet difference;
     for (auto x : this->masElement)
         if (!check(value.masElement, x))
             difference.masElement.push_back(x);
     return difference;
 }
-MySet differenceSet(MySet& valueOne, MySet& valueTwo) {
+MySet differenceSet(MySet& valueOne, MySet& valueTwo) { // использует выше указанную функцию
     MySet difference;
     difference = valueOne - valueTwo;
     return difference;
 }
-void MySet::operator -= (std::string& line) {
+void MySet::operator -= (std::string& line) { // использует выше описанную функцию
     MySet value;
     value.setter(line);
     *this = *this - value;
@@ -72,7 +72,7 @@ void MySet::differenceElement(std::string& line) {
 
 
 // cross
-MySet MySet::operator * (MySet& value) {
+MySet MySet::operator * (MySet& value) { // пересечение проверяет если элементы схожи то записываем 
     MySet crossing;
     for (auto x : this->masElement)
         if (check(value.masElement, x))
@@ -88,7 +88,7 @@ MySet crossSet(MySet& valueOne, MySet& valueTwo) {
 
 
 // merge
-MySet MySet::operator+(MySet& value) {
+MySet MySet::operator+(MySet& value) { // проверяет если элементы отсутствуют у друг друга тто записываем
     MySet merging;
     merging.masElement = this->masElement;
     merging += value;
@@ -120,20 +120,20 @@ bool MySet::add(std::string& line) {
 
 
 // check
-bool MySet::check(sets& valueOne, sets& valueTwo) {
-    if ((valueOne.flag + valueTwo.flag) % 2 == 0)
-        if (valueOne.flag) {
+bool MySet::check(sets& valueOne, sets& valueTwo) { // проверка на схожесть элементов
+    if ((valueOne.flag + valueTwo.flag) % 2 == 0) // если элементы разного типа элемент и множество как элемент
+        if (valueOne.flag) { // если элемент то проверям их значения 
             return valueOne.element == valueTwo.element;
         }
         else
-            return check(valueOne.elements, valueTwo.elements) && check(valueTwo.elements, valueOne.elements);
+            return check(valueOne.elements, valueTwo.elements) && check(valueTwo.elements, valueOne.elements); // если множества то запускаем проверку на схожесть множеств
     return false;
 }
-bool MySet::check(std::vector<sets>& valueOne, std::vector<sets>& valueTwo) {
+bool MySet::check(std::vector<sets>& valueOne, std::vector<sets>& valueTwo) { // схожесть множеств
     bool flag = false;
-    for (auto x : valueOne) {
-        for (auto y : valueTwo)
-            if (check(x, y)) {
+    for (auto x : valueOne) { // по всем элементам одного 
+        for (auto y : valueTwo) // и другого 
+            if (check(x, y)) { // если равны их элементы 
                 flag = true;
                 break;
             }
@@ -143,9 +143,9 @@ bool MySet::check(std::vector<sets>& valueOne, std::vector<sets>& valueTwo) {
     }
     return true;
 }
-bool MySet::check(std::vector<sets>& valueOne, sets& valueTwo) {
-    for (auto x : valueOne) {
-        if (check(x, valueTwo))
+bool MySet::check(std::vector<sets>& valueOne, sets& valueTwo) { // проверка на принадлежность элемента ко множеству 
+    for (auto x : valueOne) { // если элемент массива 
+        if (check(x, valueTwo)) // схожи с данным  возвращаем true
             return true;
     }
     return false;
